@@ -23,7 +23,12 @@ module PayPal::SDK::Core
 
         class Float < ::Float
           def self.new(float)
-            float.to_f
+            # Floats are inccurate. BigDecimal is better.
+            # Ruby example: 2.20 - 2.01 = 0.1900000000000004
+            # To support currencies with up to 4 subunits, we round(4)
+            # Reference 1: https://stackoverflow.com/a/3730040/1109211
+            # Reference 2: https://stackoverflow.com/a/3730249/1109211
+            BigDecimal.new(float.to_f.round(4).to_s)
           end
         end
 
